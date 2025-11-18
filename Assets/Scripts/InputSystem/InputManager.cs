@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+[DefaultExecutionOrder(-100)]
 public class InputManager : MonoBehaviour
 {
     private const string PlayerMapName = "PlayerActionMap";
@@ -10,8 +11,8 @@ public class InputManager : MonoBehaviour
 
     private PlayerInput playerInput;
 
-    public InputAction Look => playerInput.actions["Look"];
     public InputAction Move => playerInput.actions["Move"];
+    public InputAction Look => playerInput.actions["Look"];
     public InputAction Jump => playerInput.actions["Jump"];
     public InputAction Crouch => playerInput.actions["Crouch"];
     public InputAction Sprint => playerInput.actions["Sprint"];
@@ -43,20 +44,22 @@ public class InputManager : MonoBehaviour
             //WeaponSlot1.Enable();
             //WeaponSlot2.Enable();
             //WeaponSlot3.Enable();
+            Pause.Enable();
         }
         else
         {
-            Move.Enable();
-            Jump.Enable();
-            Look.Enable();
-            Sprint.Enable();
-            Collect.Enable();
-            Interact.Enable();
-            Crouch.Enable();
+            Move.Disable();
+            Jump.Disable();
+            Look.Disable();
+            Sprint.Disable();
+            Collect.Disable();
+            Interact.Disable();
+            Crouch.Disable();
             //SwitchWeaponByScroll.Disable();
             //WeaponSlot1.Disable();
             //WeaponSlot2.Disable();
             //WeaponSlot3.Disable();
+            Pause.Disable();
         }
     }
 
