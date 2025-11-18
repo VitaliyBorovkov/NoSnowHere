@@ -1,0 +1,40 @@
+using UnityEngine;
+
+public class PlayerLook : MonoBehaviour
+{
+    public Camera playerCamera;
+
+    public float xRotation = 0f;
+    public float xSensitivity = 30f;
+    public float ySensitivity = 30f;
+
+    private void Start()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+
+        if (playerCamera != null)
+        {
+            float angle = playerCamera.transform.localEulerAngles.x;
+
+            if (angle > 180f)
+            {
+                angle -= 360f;
+            }
+            xRotation = angle;
+        }
+    }
+
+    public void Look(Vector2 lookInput)
+    {
+        float mouseX = lookInput.x;
+        float mouseY = lookInput.y;
+        xRotation -= (mouseY * Time.deltaTime) * ySensitivity;
+        xRotation = Mathf.Clamp(xRotation, -90f, 90f);
+        if (playerCamera != null)
+        {
+            playerCamera.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+        }
+        transform.Rotate(Vector3.up * (mouseX * Time.deltaTime) * xSensitivity);
+    }
+}
