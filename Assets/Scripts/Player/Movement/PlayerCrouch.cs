@@ -38,7 +38,7 @@ public class PlayerCrouch : MonoBehaviour
 
         if (standingHeight <= 0f)
         {
-            standingHeight = characterController != null ? characterController.height : 1.8f;
+            standingHeight = characterController.height;
         }
 
         if (crouchHeight <= 0f)
@@ -46,8 +46,8 @@ public class PlayerCrouch : MonoBehaviour
             crouchHeight = standingHeight * 0.6f;
         }
 
-        initialStandingCenter = characterController != null ? characterController.center : Vector3.up *
-            (standingHeight / 2f);
+        initialStandingCenter = characterController.center;
+        initialStandingHeight = standingHeight;
 
         if (playerCamera != null)
         {
@@ -60,33 +60,37 @@ public class PlayerCrouch : MonoBehaviour
 
             if (crouchCameraLocalPosition == Vector3.zero)
             {
-                crouchCameraLocalPosition = standingCameraLocalPosition + Vector3.down *
-                    (standingHeight - crouchHeight * 0.5f);
+                float downward = (standingHeight - crouchHeight) * 0.5f;
+                crouchCameraLocalPosition = standingCameraLocalPosition + Vector3.down * downward;
             }
         }
 
-        initialStandingHeight = standingHeight;
-
-        targetHeight = standingHeight;
-        targetCenter = initialStandingCenter;
-        targetCameraLocalPosition = standingCameraLocalPosition;
+        targetHeight = characterController.height;
+        targetCenter = characterController.center;
+        targetCameraLocalPosition = playerCamera != null ? playerCamera.transform.localPosition : Vector3.zero;
     }
 
     private void Start()
     {
         SetControllerImmediate(standingHeight, initialStandingCenter);
+        if (playerCamera != null)
+        {
+            playerCamera.transform.localPosition = standingCameraLocalPosition;
+        }
     }
 
     private void LateUpdate()
     {
-        if (characterController != null)
+        if (characterController == null)
         {
-            float newHeight = Mathf.Lerp(characterController.height, targetHeight, Time.deltaTime * transitionSpeed);
-            characterController.height = newHeight;
-
-            Vector3 newCenter = Vector3.Lerp(characterController.center, targetCenter, Time.deltaTime * transitionSpeed);
-            characterController.center = newCenter;
+            return;
         }
+
+        float newHeight = Mathf.Lerp(characterController.height, targetHeight, Time.deltaTime * transitionSpeed);
+        characterController.height = newHeight;
+
+        Vector3 newCenter = Vector3.Lerp(characterController.center, targetCenter, Time.deltaTime * transitionSpeed);
+        characterController.center = newCenter;
 
         if (playerCamera != null)
         {
@@ -97,26 +101,46 @@ public class PlayerCrouch : MonoBehaviour
 
     public void StartCrouch()
     {
-        if (IsCrouching)
+        if (IsCrouching || characterController == null)
         {
             return;
         }
+        float bottomBefore = GetControllerBottomY(characterController);
 
         IsCrouching = true;
 
         var sprint = GetComponent<PlayerSprint>();
         sprint?.OnTrySprintStop();
 
-        targetHeight = crouchHeight;
-        targetCenter = Vector3.up * (crouchHeight / 2f);
-        targetCameraLocalPosition = crouchCameraLocalPosition;
+        float currentHeight = characterController.height;
+        float newHeight = crouchHeight;
 
-        Debug.Log($"{LOG}: Crouch started.");
+        Vector3 currentCenter = characterController.center;
+        float newCenterY = currentCenter.y + (newHeight - currentHeight) * 0.5f;
+        Vector3 newCenter = new Vector3(currentCenter.x, newCenterY, currentCenter.z);
+
+        targetHeight = newHeight;
+        targetCenter = newCenter;
+
+        if (playerCamera != null)
+        {
+            if (crouchCameraLocalPosition != Vector3.zero)
+            {
+                targetCameraLocalPosition = crouchCameraLocalPosition;
+            }
+            else
+            {
+                float downward = (standingHeight - crouchHeight) * 0.5f;
+                targetCameraLocalPosition = standingCameraLocalPosition + Vector3.down * downward;
+            }
+        }
+
+        float bottomAfter = ComputeExecutedBottom(transform.position.y, newCenter.y, newHeight);
     }
 
     public void StopCrouch()
     {
-        if (!IsCrouching)
+        if (!IsCrouching || characterController == null)
         {
             return;
         }
@@ -127,11 +151,38 @@ public class PlayerCrouch : MonoBehaviour
             return;
         }
 
+        float newHeight = standingHeight;
+        Vector3 newCenter = ComputeCenterForHeight(newHeight);
+
         IsCrouching = false;
-        targetHeight = standingHeight;
-        targetCenter = Vector3.up * (crouchHeight / 2f);
+
+        targetHeight = newHeight;
+        targetCenter = newCenter;
         targetCameraLocalPosition = standingCameraLocalPosition;
-        Debug.Log($"{LOG}: Stand up.");
+    }
+
+    private bool CanStand()
+    {
+        if (characterController == null)
+        {
+            return true;
+        }
+
+        float currentHeight = characterController.height;
+        Vector3 currentCenter = characterController.center;
+        float newHeight = standingHeight;
+
+        float bottom = GetControllerBottomY(characterController);
+        Vector3 worldBottom = new Vector3(transform.position.x, bottom, transform.position.z);
+
+        Vector3 topStanding = worldBottom + Vector3.up * newHeight;
+
+        float radius = characterController.radius;
+        Vector3 bottomPoint = worldBottom + Vector3.up * radius;
+        Vector3 topPoint = topStanding - Vector3.up * radius;
+
+        bool blocked = Physics.CheckCapsule(bottomPoint, topPoint, radius, obstacleMask, QueryTriggerInteraction.Ignore);
+        return !blocked;
     }
 
     private void SetControllerImmediate(float height, Vector3 center)
@@ -145,22 +196,21 @@ public class PlayerCrouch : MonoBehaviour
         characterController.center = center;
     }
 
-    private bool CanStand()
+    private float GetControllerBottomY(CharacterController characterController)
     {
-        if (characterController == null)
-        {
-            return true;
-        }
+        return transform.position.y + characterController.center.y - characterController.height * 0.5f;
+    }
 
-        float radius = characterController.radius;
-        float halfStanding = standingHeight / 2f;
-        float halfCurrnet = characterController.height / 2f;
+    private float ComputeExecutedBottom(float worldPositionY, float centerY, float height)
+    {
+        return worldPositionY + centerY - height * 0.5f;
+    }
 
-        Vector3 worldCenter = transform.position + characterController.center;
-        Vector3 bottom = worldCenter - Vector3.up * halfCurrnet + Vector3.up * radius;
-        Vector3 topStanding = worldCenter + Vector3.up * (halfStanding - radius);
-
-        bool blocked = Physics.CheckCapsule(bottom, topStanding, radius, obstacleMask, QueryTriggerInteraction.Ignore);
-        return !blocked;
+    private Vector3 ComputeCenterForHeight(float desiredHeight)
+    {
+        float currentHeight = characterController.height;
+        Vector3 currentCenter = characterController.center;
+        float newCenterY = currentCenter.y + (desiredHeight - currentHeight) * 0.5f;
+        return new Vector3(currentCenter.x, newCenterY, currentCenter.z);
     }
 }

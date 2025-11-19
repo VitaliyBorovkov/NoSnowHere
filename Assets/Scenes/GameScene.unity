@@ -131,9 +131,9 @@ GameObject:
   - component: {fileID: 103972318}
   - component: {fileID: 103972317}
   - component: {fileID: 103972316}
-  m_Layer: 0
-  m_Name: Plane
-  m_TagString: Untagged
+  m_Layer: 6
+  m_Name: Ground
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -410,9 +410,9 @@ GameObject:
   - component: {fileID: 1090629926}
   - component: {fileID: 1090629925}
   - component: {fileID: 1090629924}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Cube
-  m_TagString: Untagged
+  m_TagString: Environment
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -514,6 +514,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 418408297557895618, guid: e3253f4ecc34cf64cb2ad3e6d6369f08, type: 3}
+      propertyPath: obstacleMask.m_Bits
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1466401862439027938, guid: e3253f4ecc34cf64cb2ad3e6d6369f08, type: 3}
       propertyPath: m_DefaultActionMap
       value: df70fa95-8a34-4494-b137-73ab6b9c7d37
@@ -528,7 +532,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3414565880127201017, guid: e3253f4ecc34cf64cb2ad3e6d6369f08, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.67
+      value: 0.95
       objectReference: {fileID: 0}
     - target: {fileID: 3414565880127201017, guid: e3253f4ecc34cf64cb2ad3e6d6369f08, type: 3}
       propertyPath: m_LocalPosition.z
