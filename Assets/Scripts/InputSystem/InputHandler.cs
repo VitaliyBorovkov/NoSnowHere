@@ -13,7 +13,7 @@ public class InputHandler : MonoBehaviour
     private PlayerJump playerJump;
     private PlayerCrouch playerCrouch;
     private PlayerSprint playerSprint;
-    //private PlayerCollect playerCollect;
+    private PlayerCollect playerCollect;
     //private PlayerInteract playerInteract;
 
     //private PlayerSwitchWeapon playerSwitchWeapon;
@@ -27,17 +27,18 @@ public class InputHandler : MonoBehaviour
 
     private void Awake()
     {
-        inputManager = GetComponent<InputManager>();
+        var components = GetComponent<PlayerComponents>();
 
-        playerMove = GetComponent<PlayerMove>();
-        playerLook = GetComponent<PlayerLook>();
-        playerJump = GetComponent<PlayerJump>();
-        playerSprint = GetComponent<PlayerSprint>();
-        playerCrouch = GetComponent<PlayerCrouch>();
-        //playerCollect = GetComponent<PlayerCollect>();
-        //playerInteract = GetComponent<PlayerInteract>();
+        inputManager = components.InputManager;
+        playerMove = components.Move;
+        playerLook = components.Look;
+        playerJump = components.Jump;
+        playerSprint = components.Sprint;
+        playerCrouch = components.Crouch;
+        playerCollect = components.Collect;
+        //playerInteract = components.Interact;
 
-        //playerSwitchWeapon = GetComponent<PlayerSwitchWeapon>();
+        //playerSwitchWeapon = components.SwitchWeapon;
 
         if (playerJump != null && playerMove != null)
         {
@@ -235,7 +236,14 @@ public class InputHandler : MonoBehaviour
             return;
         }
 
-        //playerCollect?.StartCollect();
+        if (playerCollect != null)
+        {
+            playerCollect.StartCollect();
+        }
+        else
+        {
+            Debug.Log($"{LOG}: Collect action started but PlayerCollect is missing.");
+        }
     }
 
     private void OnCollectCanceled(InputAction.CallbackContext ctx)
@@ -245,7 +253,7 @@ public class InputHandler : MonoBehaviour
             return;
         }
 
-        //playerCollect?.StopCollect();
+        playerCollect?.StopCollect();
     }
 
     private void OnInteractPerformed(InputAction.CallbackContext ctx)

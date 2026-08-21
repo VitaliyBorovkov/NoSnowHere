@@ -24,9 +24,10 @@ public class PlayerMove : MonoBehaviour
 
     private void Awake()
     {
-        characterController = GetComponent<CharacterController>();
-        playerSprint = GetComponent<PlayerSprint>();
-        playerCrouch = GetComponent<PlayerCrouch>();
+        var components = GetComponent<PlayerComponents>();
+        characterController = components.CharacterController;
+        playerSprint = components.Sprint;
+        playerCrouch = components.Crouch;
 
         if (characterController == null || playerSprint == null)
         {
