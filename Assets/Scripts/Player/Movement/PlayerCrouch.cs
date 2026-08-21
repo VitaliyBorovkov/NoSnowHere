@@ -22,6 +22,8 @@ public class PlayerCrouch : MonoBehaviour
 
     public bool IsCrouching { get; private set; } = false;
 
+    private PlayerSprint playerSprint;
+
     private float targetHeight;
     private Vector3 targetCenter;
     private Vector3 targetCameraLocalPosition;
@@ -31,10 +33,9 @@ public class PlayerCrouch : MonoBehaviour
 
     private void Awake()
     {
-        if (characterController == null)
-        {
-            characterController = GetComponent<CharacterController>();
-        }
+        var components = GetComponent<PlayerComponents>();
+        characterController = components.CharacterController;
+        playerSprint = components.Sprint;
 
         if (standingHeight <= 0f)
         {
@@ -109,8 +110,7 @@ public class PlayerCrouch : MonoBehaviour
 
         IsCrouching = true;
 
-        var sprint = GetComponent<PlayerSprint>();
-        sprint?.OnTrySprintStop();
+        playerSprint?.OnTrySprintStop();
 
         float currentHeight = characterController.height;
         float newHeight = crouchHeight;

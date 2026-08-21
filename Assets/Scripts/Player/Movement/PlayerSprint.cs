@@ -26,10 +26,11 @@ public class PlayerSprint : MonoBehaviour
         return inputVector;
     }
 
-    private void Start()
+    private void Awake()
     {
-        characterController = GetComponent<CharacterController>();
-        playerCrouch = GetComponent<PlayerCrouch>();
+        var components = GetComponent<PlayerComponents>();
+        characterController = components.CharacterController;
+        playerCrouch = components.Crouch;
     }
 
     private void Update()

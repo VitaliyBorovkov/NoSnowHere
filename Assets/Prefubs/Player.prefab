@@ -157,6 +157,10 @@ GameObject:
   - component: {fileID: 1881848369907057354}
   - component: {fileID: 2049986411713625312}
   - component: {fileID: 418408297557895618}
+  - component: {fileID: -8858980333086851406}
+  - component: {fileID: 7073531712261942272}
+  - component: {fileID: 3532993763173954334}
+  - component: {fileID: 819598744073054433}
   m_Layer: 3
   m_Name: Player
   m_TagString: Player
@@ -350,8 +354,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerCamera: {fileID: 4568205985648147160}
   xRotation: 0
-  xSensitivity: 30
-  ySensitivity: 30
+  xSensitivity: 15
+  ySensitivity: 15
 --- !u!114 &1881848369907057354
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -404,3 +408,62 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   crouchSpeedMultiplier: 0.5
+--- !u!114 &-8858980333086851406
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7396944801630660472}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f90e8bb44d5c267498ac598ca4d33870, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  collectRange: 1.5
+  collectTime: 1.5
+  collectableLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  checkInterval: 0.05
+  pickupTag: Snow
+--- !u!114 &7073531712261942272
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7396944801630660472}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e711fa0b33bb7c4ab89ba4d118fc6f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3532993763173954334
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7396944801630660472}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 365aeb404c23c1e4cb665e200c06b62a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxSnowAmount: 3
+--- !u!114 &819598744073054433
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7396944801630660472}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d00563989a371b54f98b6d3d7c8bce30, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
